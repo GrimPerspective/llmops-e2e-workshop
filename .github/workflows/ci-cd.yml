@@ -43,8 +43,8 @@ jobs:
       # ---------- Unit tests ----------
       - name: Run unit tests
         run: |
-          echo "Running pytest..."
-          pytest tests/ --maxfail=1 --disable-warnings -q || exit 1
+          export PYTHONPATH="${PYTHONPATH}:${GITHUB_WORKSPACE}"
+          pytest tests/ --maxfail=1 --disable-warnings -q
 
       # ---------- Trivy filesystem scan ----------
       - name: Trivy Filesystem Scan
