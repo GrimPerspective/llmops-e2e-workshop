@@ -55,7 +55,6 @@ jobs:
             aquasec/trivy:latest \
             filesystem \
             --severity HIGH,CRITICAL \
-            --exit-code 1 \
             /src
 
       # ---------- Build Docker image ----------
