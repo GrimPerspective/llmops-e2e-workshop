@@ -1,14 +1,30 @@
-# tests/test_app.py
-from fastapi.testclient import TestClient
-from day02 import app  # now imports fine because pipeline is mocked
+# day02.py
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
-client = TestClient(app)
+app = FastAPI()
+qa_pipeline = None  # placeholder
 
-def test_chat():
-    payload = {
-        "question": "What does Hugging Face provide?",
-        "context": "Hugging Face is a technology company that provides open-source NLP libraries ..."
-    }
-    response = client.post("/chat", json=payload)
-    assert response.status_code == 200
-    assert response.json()["answer"] == "dummy answer"
+class ChatRequest(BaseModel):
+    question: str
+    context: str
+
+class ChatResponse(BaseModel):
+    answer: str
+
+@app.on_event("startup")
+async def load_pipeline():
+    global qa_pipeline
+    from transformers import pipeline  # imported only when app starts
+    qa_pipeline = pipeline(
+        "question-answering",
+        model="distilbert-base-uncased-distilled-squad"
+    )
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest):
+    try:
+        result = qa_pipeline(question=request.question, context=request.context)
+        return ChatResponse(answer=result["answer"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
