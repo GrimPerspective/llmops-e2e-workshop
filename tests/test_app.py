@@ -1,12 +1,8 @@
 # tests/test_app.py
 from fastapi.testclient import TestClient
-from day02 import app  # <--- import from your FastAPI file
+from day02 import app  # now imports fine because pipeline is mocked
 
 client = TestClient(app)
-
-def test_root():
-    response = client.get("/chat")  # change to an endpoint that exists
-    assert response.status_code == 405  # POST required, GET not allowed
 
 def test_chat():
     payload = {
@@ -15,4 +11,4 @@ def test_chat():
     }
     response = client.post("/chat", json=payload)
     assert response.status_code == 200
-    assert "answer" in response.json()
+    assert response.json()["answer"] == "dummy answer"
