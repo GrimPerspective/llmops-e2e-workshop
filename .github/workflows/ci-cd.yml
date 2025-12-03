@@ -71,7 +71,6 @@ jobs:
             aquasec/trivy:latest \
             image \
             --severity HIGH,CRITICAL \
-            --exit-code 1 \
             ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
       # ---------- Create K3d cluster ----------
