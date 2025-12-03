@@ -1,6 +1,7 @@
-transformers
 fastapi
-uvicorn
 pydantic
+uvicorn
 httpx
-torch
+pytest
+flake8
+transformers[sentencepiece]
