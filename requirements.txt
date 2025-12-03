@@ -1,6 +1,6 @@
 transformers
 tf-keras
-torch
+torch==2.2.0
 fastapi
 uvicorn
 pydantic
