@@ -160,9 +160,13 @@ jobs:
           curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
           k3d cluster create llmops --api-port 6550 -p "30007:30007@server:0" || echo "Cluster exists"
 
-      - name: Import Image into K3d
+      - name: Pull image from GHCR
         run: |
-          k3d image import ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }} --cluster llmops
+          docker pull ghcr.io/grimperspective/llmops-app:latest
+      
+      - name: Import image into k3d
+        run: |
+          k3d image import ghcr.io/grimperspective/llmops-app:latest --cluster llmops
 
       - name: Deploy Manifests
         run: |
