@@ -128,11 +128,11 @@ jobs:
       - name: Tag for GHCR
         run: |
           docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-            ghcr.io/${{ github.repository }}/llmops-app:${{ env.IMAGE_TAG }}
+            ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }}
 
       - name: Push to GHCR
         run: |
-          docker push ghcr.io/${{ github.repository }}/llmops-app:${{ env.IMAGE_TAG }}
+          docker push ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }}
 
       - name: Scan Final Image
         run: |
@@ -142,7 +142,7 @@ jobs:
             aquasec/trivy:latest \
             image \
             --severity HIGH,CRITICAL \
-            ghcr.io/${{ github.repository }}/llmops-app:${{ env.IMAGE_TAG }} \
+            ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }} \
             || true
 
 
@@ -162,14 +162,14 @@ jobs:
 
       - name: Import Image into K3d
         run: |
-          k3d image import ghcr.io/${{ github.repository }}/llmops-app:${{ env.IMAGE_TAG }} --cluster llmops
+          k3d image import ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }} --cluster llmops
 
       - name: Deploy Manifests
         run: |
           kubectl apply -f ${{ env.DEPLOYMENT_FILE }}
           kubectl apply -f ${{ env.SERVICE_FILE }}
           kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} \
-            ${{ env.CONTAINER_NAME }}=ghcr.io/${{ github.repository }}/llmops-app:${{ env.IMAGE_TAG }} --record
+            ${{ env.CONTAINER_NAME }}=ghcr.io/grimperspective/llmops-app:${{ env.IMAGE_TAG }} --record
 
       - name: Wait for Rollout
         run: |
